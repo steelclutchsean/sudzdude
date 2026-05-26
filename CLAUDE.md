@@ -63,7 +63,7 @@ The `images/` directory contains 18 files, **12 of which are placed on the page*
 
 The 12 images on the page and where:
 - Hero bg: `Side_of_car_image_of_wix.jpg`
-- Process rows (3): `AdobeStock_578337227.jpg`, `IMG_2476.jpg`, `Screenshot_4-3-2026_11411_www.canva.com.jpg`
+- Process rows (3): `AdobeStock_578337227.jpg`, `IMG_2476.jpg`, `IMG_9578.PNG`
 - Gallery feature (before/after): `Trim_Restoration.jpg`
 - Gallery 6-tile grid: `black-river-detail-car-wheels.jpg`, `IMG_2475.jpg`, `IMG_2479.jpg`, `FDBED73D-D6FB-4EF5-B8E6-2AAC676B428F.jpg`, `cURF9NOy-IMG_0279.jpg`, `IMG_2483.jpg`
 - About: `20251228_113759_3.jpg`
