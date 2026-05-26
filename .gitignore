@@ -6,6 +6,10 @@
 # Claude Code local
 .claude/
 
+# Agent skills (installed via `npx skills add ...`)
+.agents/
+skills-lock.json
+
 # Editors
 .vscode/
 .idea/
