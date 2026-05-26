@@ -93,7 +93,7 @@ If asked to "wire up" any of these, ask before assuming — they're stubs by des
 
 - Social links — all `href="#"` (Instagram, Facebook, TikTok)
 - Jeff's bio in the About section — explicit `[Full bio coming soon.]` paragraph
-- Service prices ($89 / $249 / $899) — recommended starting points, may not be final
+- Service prices ($399 / $1,399) — recommended starting points, may not be final
 - Service area town list — 25 representative Nassau County towns, not authoritative
 
 ## Out of scope
