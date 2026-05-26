@@ -1297,6 +1297,97 @@ section {
   line-height: 1.5;
 }
 
+/* Honeypot — hidden from humans, bots fill it in */
+.hp-field {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Submit-button disabled state */
+.quote-form .btn[disabled],
+.quote-form .btn:disabled {
+  opacity: 0.65;
+  cursor: progress;
+  pointer-events: none;
+}
+
+/* Inline error alert above the submit button */
+.form-alert {
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: rgba(255, 30, 122, 0.08);
+  border: 1px solid rgba(255, 30, 122, 0.4);
+  color: #FFB8D4;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Success state — replaces form contents on successful submit */
+.form-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 14px;
+  padding: 22px 0;
+  animation: success-fade 320ms cubic-bezier(.2, .7, .2, 1);
+}
+
+@keyframes success-fade {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.form-success-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-cyan-sudz);
+  color: var(--color-midnight);
+  margin-bottom: 8px;
+  box-shadow: var(--shadow-neon-cyan);
+  animation: success-pop 380ms cubic-bezier(.2, .9, .3, 1.2);
+}
+
+@keyframes success-pop {
+  from { transform: scale(0.4); opacity: 0; }
+  60%  { transform: scale(1.08); opacity: 1; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.form-success h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: var(--color-canvas-white);
+}
+
+.form-success p {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.78);
+  max-width: 380px;
+}
+
+.form-success-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 22px;
+}
+
 /* ============================================================
    Footer
    ============================================================ */

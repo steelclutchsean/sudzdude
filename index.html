@@ -578,6 +578,12 @@
         </div>
 
         <form class="quote-form reveal" id="quote-form" novalidate>
+          <!-- Honeypot: hidden from humans, bots fill it -->
+          <div class="hp-field" aria-hidden="true">
+            <label for="qf-website">Leave this empty</label>
+            <input id="qf-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+          </div>
+
           <div class="field">
             <label for="qf-name">Your name</label>
             <input id="qf-name" name="name" type="text" placeholder="Jane Driver" required autocomplete="name" />
@@ -624,8 +630,8 @@
           <div class="form-foot">
             <button class="btn btn-primary btn-block" type="submit">Send my quote request</button>
             <p class="form-note">
-              Pressing send opens your email client with the message pre-filled to
-              <a href="mailto:detail@sudzdude.com" style="color: var(--color-cyan-sudz)">detail@sudzdude.com</a>.
+              Sends directly to <a href="mailto:detail@sudzdude.com" style="color: var(--color-cyan-sudz)">detail@sudzdude.com</a>.
+              We respond within 24 hours.
               Prefer to text? <a href="sms:+15163515961" style="color: var(--color-cyan-sudz)">(516) 351-5961</a>.
             </p>
           </div>

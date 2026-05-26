@@ -70,9 +70,22 @@ The 12 images on the page and where:
 
 Logo `IMG_3705.jpeg` lives in the project root (not `images/`) and is referenced as such from nav, mobile drawer, and footer.
 
-### Form is mailto-only
+### Quote form → Vercel function → Resend → detail@sudzdude.com
 
-The quote form has no backend. `main.js` URL-encodes the field values into a `mailto:detail@sudzdude.com?subject=...&body=...` string. If a real backend (Formspree, Netlify Forms, server endpoint) is added later, replace the submit handler in `main.js` and the form's `novalidate` flag.
+The quote form POSTs JSON to `/api/quote`, a Vercel serverless function (`api/quote.js`) that calls the Resend REST API to email the submission to `detail@sudzdude.com`. The `Reply-To` header is set to the customer's email so hitting Reply in the inbox responds to them directly.
+
+**Required env var:** `RESEND_API_KEY` — set in Vercel project settings (Production / Preview / Development). The function returns 500 if it's missing.
+
+**Sender:** `quotes@sudzdude.com` on the verified `sudzdude.com` domain in Resend. The mailbox does not need to exist — Resend only requires DKIM/SPF on the apex.
+
+**Spam protection:** A hidden honeypot field (`name="website"`, hidden via `.hp-field` off-screen positioning, not `display:none` so bots target it) — server quietly returns 200 if filled, without sending. No CAPTCHA.
+
+**Client-side behavior** (`main.js`):
+- On success: form innerHTML is replaced with a `.form-success` panel (cyan check, personalized headline, Call/Text CTAs)
+- On error: inline `.form-alert` appears above the submit button, button re-enables, error message comes from server
+- During send: submit button shows "Sending…" and is disabled
+
+There is **no local dev story** for the function — `python3 -m http.server` only serves static files. To run the function locally, use `npx vercel dev`. In practice, test on the Vercel preview URL after a push.
 
 ## Things that are intentionally placeholders
 

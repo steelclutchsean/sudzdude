@@ -59,26 +59,67 @@
   });
 
   /* ============================================================
-     Quote form → mailto
+     Quote form → POST /api/quote (Resend via Vercel function)
      ============================================================ */
   const form = document.getElementById('quote-form');
+
+  const escapeText = (s) => {
+    const d = document.createElement('div');
+    d.textContent = s == null ? '' : String(s);
+    return d.innerHTML;
+  };
+
+  const showError = (msg) => {
+    let alert = form.querySelector('.form-alert');
+    if (!alert) {
+      alert = document.createElement('div');
+      alert.className = 'form-alert';
+      alert.setAttribute('role', 'alert');
+      const foot = form.querySelector('.form-foot');
+      form.insertBefore(alert, foot);
+    }
+    alert.textContent = msg;
+  };
+
+  const showSuccess = (firstName) => {
+    form.innerHTML = `
+      <div class="form-success" role="status">
+        <div class="form-success-icon" aria-hidden="true">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 6 9 17l-5-5"/>
+          </svg>
+        </div>
+        <h3>Got it${firstName ? ', ' + escapeText(firstName) : ''}.</h3>
+        <p>Your quote request is in. Jeff will text or email back within 24 hours.</p>
+        <div class="form-success-actions">
+          <a class="btn btn-primary" href="tel:+15163515961">Call (516) 351-5961</a>
+          <a class="btn btn-ghost" href="sms:+15163515961">Text Instead</a>
+        </div>
+      </div>
+    `;
+  };
+
   if (form) {
-    form.addEventListener('submit', e => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const data = new FormData(form);
-      const get = key => String(data.get(key) || '').trim();
+      const get = (k) => String(data.get(k) || '').trim();
 
-      const name = get('name');
-      const phone = get('phone');
-      const email = get('email');
-      const vehicle = get('vehicle');
-      const pkg = get('package');
-      const town = get('town');
-      const notes = get('notes');
+      const fields = {
+        name: get('name'),
+        phone: get('phone'),
+        email: get('email'),
+        vehicle: get('vehicle'),
+        package: get('package'),
+        town: get('town'),
+        notes: get('notes'),
+        website: get('website'), // honeypot
+      };
 
-      // Light client-side check (matches `required` attrs).
-      if (!name || !phone || !email || !vehicle || !pkg || !town) {
+      // Match server-side validation client-side too
+      const required = ['name', 'phone', 'email', 'vehicle', 'package', 'town'];
+      if (required.some((k) => !fields[k])) {
         const firstInvalid = form.querySelector(':invalid');
         if (firstInvalid && typeof firstInvalid.reportValidity === 'function') {
           firstInvalid.reportValidity();
@@ -86,27 +127,44 @@
         return;
       }
 
-      const subject = `Quote request — ${pkg} — ${name}`;
-      const bodyLines = [
-        `Hi Jeff,`,
-        ``,
-        `I'd like a quote for the ${pkg} package.`,
-        ``,
-        `Name: ${name}`,
-        `Phone: ${phone}`,
-        `Email: ${email}`,
-        `Vehicle: ${vehicle}`,
-        `Town: ${town}`,
-        ``,
-        notes ? `Notes:` : '',
-        notes,
-        ``,
-        `— Sent from sudzdude.com`,
-      ].filter(line => line !== '');
+      // Clear any prior error
+      const existingAlert = form.querySelector('.form-alert');
+      if (existingAlert) existingAlert.remove();
 
-      const body = bodyLines.join('\n');
-      const mailto = `mailto:detail@sudzdude.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      window.location.href = mailto;
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalLabel = submitBtn ? submitBtn.textContent : '';
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending…';
+      }
+
+      try {
+        const r = await fetch('/api/quote', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(fields),
+        });
+
+        if (r.ok) {
+          const firstName = (fields.name.split(' ')[0] || '').trim();
+          showSuccess(firstName);
+          return;
+        }
+
+        const payload = await r.json().catch(() => ({}));
+        showError(payload.error || 'Something went wrong. Please call or text (516) 351-5961.');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalLabel;
+        }
+      } catch (err) {
+        console.error('Quote submit failed', err);
+        showError('Network error. Please call or text (516) 351-5961.');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalLabel;
+        }
+      }
     });
   }
 
